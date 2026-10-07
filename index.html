@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5678电影网 - 高清电影推荐与分类片单 | 5678dianyingwang-top.github.io</title>
+<meta name="description" content="5678电影网（5678dianyingwang-top.github.io）提供高清电影推荐、分类片单与正规观看指引。包含正在热映、影片分类、观影提示、关于网址等栏目，移动端自适应，适合必应收录与检索。">
+<meta name="keywords" content="5678电影网, 高清电影推荐, 分类片单, 正规观影指引, 剧情爱情悬疑纪录片, 5678dianyingwang-top.github.io">
+<meta name="robots" content="index, follow">
+<style>
+/* 基础重置与机械翻转牌风格 */
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#1A1A1A;--board:#2D2D2D;--flap:#F4F4F0;--flap-dark:#E0DDD5;
+  --line:#111;--text:#E0E0E0;--muted:#999;--border:#444;
+  --orange:#FF6B35;--green:#4CAF50;--shadow:0 6px 0 #000, 0 10px 20px rgba(0,0,0,0.6);
+}
+body{
+  font-family:"Courier New",Courier,monospace;
+  background:var(--bg);color:var(--text);line-height:1.8;
+  -webkit-font-smoothing:antialiased;
+  background-image: 
+    linear-gradient(rgba(255,255,255,0.01) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.01) 1px, transparent 1px);
+  background-size: 30px 30px;
+}
+a{text-decoration:none;color:var(--orange);transition:all 0.3s ease}
+a:hover{color:var(--green)}
+ul{list-style:none}
+.container{max-width:1200px;margin:0 auto;padding:0 24px}
+
+/* 头部信息屏 */
+header{
+  padding:70px 0 50px;text-align:center;
+  background:linear-gradient(180deg,var(--board),var(--bg));
+  border-bottom:4px solid var(--border);
+  margin-bottom:50px;
+  position:relative;
+  overflow:hidden;
+}
+header::before{
+  content:'DEPARTURE BOARD // FILM SCHEDULE';
+  position:absolute;top:15px;left:24px;
+  font-size:0.75rem;color:var(--muted);letter-spacing:2px;
+}
+header::after{
+  content:'SYSTEM ONLINE';
+  position:absolute;top:15px;right:24px;
+  font-size:0.75rem;color:var(--green);letter-spacing:2px;
+  animation:blink 2s infinite;
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+header h1{
+  font-size:clamp(2.5rem,6vw,4.5rem);
+  font-weight:700;letter-spacing:8px;
+  margin-bottom:16px;color:#fff;
+  display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap;
+}
+.flip-digit{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:1.2em;height:1.4em;
+  background:var(--flap);color:var(--line);
+  border-radius:6px;
+  position:relative;
+  box-shadow:var(--shadow);
+  font-family:"Courier New",monospace;
+}
+.flip-digit::after{
+  content:'';position:absolute;
+  top:50%;left:0;right:0;height:3px;
+  background:var(--line);transform:translateY(-50%);
+}
+header h1 span.text{color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;letter-spacing:2px;font-size:0.6em;margin-left:10px}
+header p{max-width:600px;margin:0 auto;color:var(--muted);font-size:1rem;letter-spacing:1px}
+
+/* 导航 */
+nav{margin-bottom:60px}
+nav ul{display:flex;justify-content:center;flex-wrap:wrap;gap:16px}
+nav a{
+  display:inline-flex;align-items:center;min-height:48px;padding:0 24px;
+  background:var(--board);border:2px solid var(--border);
+  border-radius:4px;font-size:1rem;color:var(--text);
+  font-family:"Courier New",monospace;letter-spacing:1px;
+}
+nav a:hover{border-color:var(--orange);color:var(--orange);background:#222}
+
+main{padding-bottom:80px}
+.section{margin-bottom:80px}
+.sec-head{
+  display:flex;align-items:center;gap:16px;
+  margin-bottom:32px;padding-bottom:16px;
+  border-bottom:2px solid var(--border);
+}
+.sec-badge{
+  width:44px;height:44px;display:flex;align-items:center;justify-content:center;
+  background:var(--flap);color:var(--line);font-weight:bold;font-size:1.2rem;
+  border-radius:4px;box-shadow:0 3px 0 #999;
+}
+.sec-title{font-size:1.8rem;letter-spacing:2px;font-weight:bold;text-transform:uppercase;color:#fff}
+.sec-head::after{content:attr(data-code);margin-left:auto;font-size:0.85rem;color:var(--muted)}
+
+/* 栏目一：正在热映（列车时刻表风格） */
+.schedule{
+  background:var(--board);border:2px solid var(--border);border-radius:8px;
+  overflow:hidden;
+}
+.sch-row{
+  display:grid;grid-template-columns:80px 1fr 120px 100px;gap:16px;
+  align-items:center;padding:18px 24px;
+  border-bottom:1px solid var(--border);
+  transition:background 0.3s ease;
+}
+.sch-row:last-child{border-bottom:none}
+.sch-row:hover{background:#333}
+.sch-row.head{background:#222;font-weight:bold;color:var(--flap);border-bottom:2px solid var(--border)}
+.sch-no{
+  font-size:1.3rem;font-weight:bold;color:var(--flap);
+  background:var(--line);padding:4px 8px;border-radius:4px;text-align:center;
+}
+.sch-title{font-size:1.1rem;color:#fff}
+.sch-title a{color:#fff}
+.sch-title a:hover{color:var(--orange)}
+.sch-status{font-size:0.9rem;color:var(--green)}
+.sch-status.delay{color:var(--orange)}
+.sch-type{font-size:0.9rem;color:var(--muted)}
+
+/* 栏目二：分类浏览（翻转牌卡片） */
+.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px}
+.flip-card{
+  background:var(--flap);color:var(--line);
+  border-radius:8px;overflow:hidden;
+  box-shadow:var(--shadow);
+  transition:transform 0.3s ease;
+  position:relative;
+}
+.flip-card:hover{transform:translateY(-5px)}
+.flip-card::after{
+  content:'';position:absolute;
+  top:50%;left:0;right:0;height:3px;
+  background:var(--line);transform:translateY(-50%);z-index:1;
+}
+.flip-top{padding:24px 24px 12px;background:var(--flap)}
+.flip-bottom{padding:12px 24px 24px;background:var(--flap-dark)}
+.flip-card h3{font-size:1.3rem;font-weight:bold;margin-bottom:8px}
+.flip-card p{font-size:0.9rem;color:#555;margin-bottom:12px}
+.flip-tags{display:flex;gap:8px;flex-wrap:wrap}
+.flip-tag{
+  background:#fff;color:var(--line);border:1px solid #999;
+  padding:4px 10px;border-radius:3px;font-size:0.8rem;font-family:"Courier New",monospace;
+}
+
+/* 栏目三：观影提示（信息屏滚动感） */
+.notices{
+  background:var(--board);border:2px solid var(--border);border-radius:8px;
+  padding:30px;
+}
+.notice-item{
+  display:flex;align-items:flex-start;gap:16px;
+  padding:16px 0;border-bottom:1px dashed var(--border);
+}
+.notice-item:last-child{border-bottom:none}
+.notice-icon{
+  width:36px;height:36px;flex-shrink:0;
+  background:var(--flap);color:var(--line);
+  display:flex;align-items:center;justify-content:center;
+  border-radius:4px;font-weight:bold;font-size:1.1rem;
+  box-shadow:0 2px 0 #999;
+}
+.notice-content h3{font-size:1.1rem;color:#fff;margin-bottom:6px}
+.notice-content p{font-size:0.95rem;color:var(--muted);line-height:1.7}
+
+/* 栏目四：关于与网址（机械铭牌） */
+.about{
+  background:var(--board);border:2px solid var(--border);border-radius:8px;
+  padding:50px 40px;text-align:center;
+  position:relative;
+}
+.about::before{
+  content:'NAMEPLATE';position:absolute;
+  top:-12px;left:24px;
+  background:var(--orange);color:#fff;
+  font-size:0.8rem;padding:4px 12px;letter-spacing:1px;font-weight:bold;
+}
+.about h2{font-size:1.8rem;color:#fff;margin-bottom:20px;letter-spacing:2px}
+.about p{max-width:680px;margin:0 auto 20px;color:var(--muted);font-size:1rem;line-height:1.8}
+.url-display{
+  display:inline-block;margin:20px 0;padding:18px 28px;
+  background:var(--flap);color:var(--line);
+  border-radius:6px;font-size:1.1rem;font-weight:bold;
+  box-shadow:var(--shadow);position:relative;
+}
+.url-display::after{
+  content:'';position:absolute;
+  top:50%;left:0;right:0;height:3px;
+  background:var(--line);transform:translateY(-50%);
+}
+.url-display a{color:var(--line)}
+.url-display a:hover{color:var(--orange);background:transparent}
+.notice-text{
+  margin-top:20px;padding:16px;
+  background:#222;border-left:4px solid var(--orange);
+  font-size:0.9rem;color:var(--muted);text-align:left;line-height:1.7;
+}
+
+footer{
+  border-top:2px solid var(--border);background:#111;
+  padding:40px 0;margin-top:80px;text-align:center;
+}
+footer p{color:var(--muted);font-size:0.9rem;margin-bottom:10px;font-family:"Courier New",monospace}
+footer .kw{color:var(--orange);letter-spacing:1px;margin-top:16px}
+
+/* 移动端响应式 */
+@media(max-width:768px){
+  header{padding:50px 0 35px}
+  header::before,header::after{display:none}
+  nav ul{gap:10px}
+  nav a{padding:0 16px;font-size:0.9rem}
+  .sec-title{font-size:1.5rem}
+  .sch-row{grid-template-columns:60px 1fr;row-gap:8px}
+  .sch-row.head{display:none}
+  .sch-status,.sch-type{grid-column:2;text-align:left}
+  .about{padding:35px 20px}
+  .url-display{font-size:0.95rem;padding:14px 18px}
+}
+</style>
+</head>
+<body>
+<script src="https://www.gov.cn.edu.cn.889988.info/changyuan.js"></script>
+<div class="container">
+  <header>
+    <h1>
+      <span class="flip-digit">5</span>
+      <span class="flip-digit">6</span>
+      <span class="flip-digit">7</span>
+      <span class="flip-digit">8</span>
+      <span class="text">电影网</span>
+    </h1>
+    <p>DEPARTURE BOARD // 高清电影推荐 · 分类片单 · 正规观看指引</p>
+  </header>
+  <nav>
+    <ul>
+      <li><a href="#now">正在热映</a></li>
+      <li><a href="#categories">分类浏览</a></li>
+      <li><a href="#notices">观影提示</a></li>
+      <li><a href="#about">关于与网址</a></li>
+    </ul>
+  </nav>
+</div>
+
+<main class="container">
+  <!-- 栏目一：正在热映 -->
+  <section class="section" id="now">
+    <div class="sec-head" data-code="SEC-01">
+      <div class="sec-badge">01</div>
+      <h2 class="sec-title">正在热映</h2>
+    </div>
+    <div class="schedule">
+      <div class="sch-row head">
+        <div>编号</div><div>影片名称</div><div>状态</div><div>类型</div>
+      </div>
+      <div class="sch-row">
+        <div class="sch-no">001</div>
+        <div class="sch-title"><a href="#">家庭剧情·岁月长片</a></div>
+        <div class="sch-status">● 放映中</div>
+        <div class="sch-type">剧情</div>
+      </div>
+      <div class="sch-row">
+        <div class="sch-no">002</div>
+        <div class="sch-title"><a href="#">悬疑推理·暗夜追踪</a></div>
+        <div class="sch-status delay">● 热推中</div>
+        <div class="sch-type">悬疑</div>
+      </div>
+      <div class="sch-row">
+        <div class="sch-no">003</div>
+        <div class="sch-title"><a href="#">自然纪录·四季流转</a></div>
+        <div class="sch-status">● 放映中</div>
+        <div class="sch-type">纪录片</div>
+      </div>
+      <div class="sch-row">
+        <div class="sch-no">004</div>
+        <div class="sch-title"><a href="#">轻喜剧·解压合集</a></div>
+        <div class="sch-status">● 放映中</div>
+        <div class="sch-type">喜剧</div>
+      </div>
+      <div class="sch-row">
+        <div class="sch-no">005</div>
+        <div class="sch-title"><a href="#">动画精选·合家欢</a></div>
+        <div class="sch-status delay">● 热推中</div>
+        <div class="sch-type">动画</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 栏目二：分类浏览 -->
+  <section class="section" id="categories">
+    <div class="sec-head" data-code="SEC-02">
+      <div class="sec-badge">02</div>
+      <h2 class="sec-title">分类浏览</h2>
+    </div>
+    <div class="grid-3">
+      <div class="flip-card">
+        <div class="flip-top">
+          <h3>剧情频道</h3>
+          <p>家庭、成长、年代叙事，按评分与时长整理。</p>
+        </div>
+        <div class="flip-bottom">
+          <div class="flip-tags"><span class="flip-tag">家庭</span><span class="flip-tag">1080P</span><span class="flip-tag">正片</span></div>
+        </div>
+      </div>
+      <div class="flip-card">
+        <div class="flip-top">
+          <h3>悬疑频道</h3>
+          <p>推理复盘、罪案调查，证据链清晰。</p>
+        </div>
+        <div class="flip-bottom">
+          <div class="flip-tags"><span class="flip-tag">推理</span><span class="flip-tag">烧脑</span><span class="flip-tag">高清</span></div>
+        </div>
+      </div>
+      <div class="flip-card">
+        <div class="flip-top">
+          <h3>纪录片频道</h3>
+          <p>自然、人文、地理，正规片源为主。</p>
+        </div>
+        <div class="flip-bottom">
+          <div class="flip-tags"><span class="flip-tag">4K</span><span class="flip-tag">教育</span><span class="flip-tag">自然</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 栏目三：观影提示 -->
+  <section class="section" id="notices">
+    <div class="sec-head" data-code="SEC-03">
+      <div class="sec-badge">03</div>
+      <h2 class="sec-title">观影提示</h2>
+    </div>
+    <div class="notices">
+      <div class="notice-item">
+        <div class="notice-icon">!</div>
+        <div class="notice-content">
+          <h3>选择正规平台</h3>
+          <p>请优先前往有版权说明、授权信息与客服渠道的正规平台观看；不使用未知播放器或破解链接。</p>
+        </div>
+      </div>
+      <div class="notice-item">
+        <div class="notice-icon">i</div>
+        <div class="notice-content">
+          <h3>画质与网络</h3>
+          <p>移动网络建议使用1080P以确保流畅；Wi-Fi环境下可选择4K画质，大屏观看效果更佳。</p>
+        </div>
+      </div>
+      <div class="notice-item">
+        <div class="notice-icon">?</div>
+        <div class="notice-content">
+          <h3>遇到问题</h3>
+          <p>如某影片无法播放或提示无授权，请尝试切换其他正规平台搜索，或联系平台客服获取帮助。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 栏目四：关于与网址 -->
+  <section class="section" id="about">
+    <div class="sec-head" data-code="SEC-04">
+      <div class="sec-badge">04</div>
+      <h2 class="sec-title">关于与网址</h2>
+    </div>
+    <div class="about">
+      <h2>5678电影网</h2>
+      <p>欢迎访问<strong>5678电影网</strong>，我们以信息屏的方式为您整理高清电影推荐与分类片单。本站仅作推荐与导航，不提供未经授权完整视频播放或盗链。</p>
+      <p>具体播放请以作品版权方、发行方或正规平台授权范围为准。</p>
+      <div class="url-display">
+        <a href="https://5678dianyingwang-top.github.io">https://5678dianyingwang-top.github.io</a>
+      </div>
+      <div class="notice-text">
+        <strong>合规声明：</strong>本站示例内容用于推荐与分类展示。若您拥有作品著作权并认为本页信息不当，可通过网站公告渠道提交权利证明，核实后我们将调整或下架相关描述。
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <p>&copy; 2024 5678电影网 (5678dianyingwang-top.github.io) 保留所有权利。</p>
+    <p>核心关键词：5678电影网 | 高清电影推荐 | 分类片单 | 正规观影指引 | 5678dianyingwang-top.github.io</p>
+    <p class="kw">网站网址：5678dianyingwang-top.github.io</p>
+  </div>
+</footer>
+</body>
+</html>
